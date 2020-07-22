@@ -1,1 +1,1 @@
-Classic Break Breaker game made with Unity 2D
+Classic Brick Breaker game made with Unity 2D
