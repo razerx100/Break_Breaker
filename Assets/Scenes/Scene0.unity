@@ -164,6 +164,8 @@ MonoBehaviour:
   ball: {fileID: 5534830112771214683, guid: e872a4e1f055b614eadcda8d789d7be6, type: 3}
   platform: {fileID: 3283551900170838148, guid: 88acab37c05a61a4bb38ae791e0835a3,
     type: 3}
+  bricks1: {fileID: 4811447248353742769, guid: cbfbee15d97e62f41ab82bfcd51f3dc3, type: 3}
+  bricks2: {fileID: 5688812152840189643, guid: 3f5e870181e23874ab51f7abe16066c6, type: 3}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0

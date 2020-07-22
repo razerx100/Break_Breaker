@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4811447248353742770}
   - component: {fileID: 4811447248353742771}
   - component: {fileID: 4729643896450041875}
+  - component: {fileID: 5192439235526101533}
   m_Layer: 0
   m_Name: g-brick-1
   m_TagString: Untagged
@@ -108,3 +109,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 5.34, y: 2.67}
   m_EdgeRadius: 0
+--- !u!114 &5192439235526101533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4811447248353742769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67bca4fcecb0fa1429142715f7016146, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
