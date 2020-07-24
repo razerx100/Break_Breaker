@@ -7,6 +7,6 @@ public class BrickOneScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Destroy(gameObject);
-        MainScript.bricks_num--;
+        Camera.main.GetComponent<MainScript>().bricks_num--;
     }
 }

@@ -12,7 +12,7 @@ public class BrickTwoScript : MonoBehaviour
         {
             Destroy(gameObject);
             hitCount = 2;
-            MainScript.bricks_num--;
+            Camera.main.GetComponent<MainScript>().bricks_num--;
         }
     }
 }

@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -160,12 +161,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e534b2c7e490a744c95da675106d5390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  quitPrefab: {fileID: 3682380560156294471, guid: fdaebb10b8bb9ac40917f604bf5adb24,
+    type: 3}
+  startScreen: {fileID: 1633604835832944786, guid: b819fcd063e8f9444b931cdc00df9054,
+    type: 3}
+  startGame: {fileID: 1585388438451379966, guid: 82c60faadfdb011428d90f51daac1705,
+    type: 3}
+  continueGamePrefab: {fileID: 5367554773546610597, guid: 50160293da8d34048812aff2b37ab962,
+    type: 3}
+  continueScreenPrefab: {fileID: 496462898530738099, guid: d7cc9c3ba2d9d024aad12449af136522,
+    type: 3}
+  background: {fileID: 7909167867503481387, guid: 01a3d81ec5de8074db0409e486566ab2,
+    type: 3}
   border: {fileID: 5608835248078106851, guid: c33512bfb8ea14442a018abb56f67f0f, type: 3}
   ball: {fileID: 5534830112771214683, guid: e872a4e1f055b614eadcda8d789d7be6, type: 3}
   platform: {fileID: 3283551900170838148, guid: 88acab37c05a61a4bb38ae791e0835a3,
     type: 3}
   bricks1: {fileID: 4811447248353742769, guid: cbfbee15d97e62f41ab82bfcd51f3dc3, type: 3}
   bricks2: {fileID: 5688812152840189643, guid: 3f5e870181e23874ab51f7abe16066c6, type: 3}
+  bricks_num: 6
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -223,3 +237,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0

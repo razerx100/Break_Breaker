@@ -4,12 +4,31 @@ using UnityEngine;
 
 public class MainScript : MonoBehaviour
 {
+    bool gameRunning = false;
+    bool inputAllowed = true;
+    bool quit_confirm = false;
+    bool end_screen_confirm = false;
+    bool continue_confirm = false;
+
+    [SerializeField]
+    GameObject quitPrefab;
+    GameObject quit;
+    const float ContinueQuitX = 4.33099f, ContinueQuitY = -12.65309f;
+
+    [SerializeField]
+    GameObject startScreen, startGame, continueGamePrefab, continueScreenPrefab;
+    GameObject continueGame, continueScreen;
+
+    [SerializeField]
+    GameObject background;
+
     [SerializeField]
     GameObject border;
     const float BorderPosX = 0, BorderPosY = -0.1f;
 
     [SerializeField]
     GameObject ball;
+    Vector2 ballPreviousVelocity;
     const float BallVelocity = 25;
     const float BallStartX = 0, BallStartY = -33.8f;
     bool ballMoving = false;
@@ -30,22 +49,68 @@ public class MainScript : MonoBehaviour
     const float BrickBoundMinY = 11f, BrickBoundMaxY = 38f;
 
     const int bricks_number = 6;
-    public static int bricks_num = bricks_number;
+    public int bricks_num = bricks_number;
 
     void Start()
     {
-        spawner();
-        platformColliderHalfWidth = platform.GetComponent<BoxCollider2D>().size.x / 2;
+        loadMainMenu();
     }
 
     void Update()
     {
-        keyInput();
-        ballOut();
-        if(bricks_num == 0)
+        if (gameRunning)
         {
-            reSet();
+            if (inputAllowed)
+            {
+                keyInput();
+            }
+            ballOut();
+            if (bricks_num == 0)
+            {
+                setUpContinueScreen();
+            }
         }
+        else
+        {
+            detectMouseInput();
+        }
+        if (quit_confirm)
+        {
+            if (Input.GetKeyDown("space"))
+            {
+                Destroy(quit);
+                resumeGame();
+                quit_confirm = false;
+            }
+        }
+        if (end_screen_confirm)
+        {
+            quitOrNot();
+            continue_confirm = continueGame.GetComponent<ContinueGameScript>().gotClicked();
+            if (continue_confirm)
+            {
+                cleanUpContinueScreen();
+            }
+        }
+    }
+    void setUpContinueScreen()
+    {
+        continueGame = Instantiate(continueGamePrefab);
+        continueScreen = Instantiate(continueScreenPrefab);
+        quit = Instantiate(quitPrefab);
+        quit.transform.position = new Vector3(ContinueQuitX, ContinueQuitY);
+        reSet();
+        inputAllowed = false;
+        end_screen_confirm = true;
+    }
+    void cleanUpContinueScreen()
+    {
+        inputAllowed = true;
+        end_screen_confirm = false;
+        continue_confirm = false;
+        Destroy(continueGame);
+        Destroy(continueScreen);
+        Destroy(quit);
     }
 
     private void FixedUpdate()
@@ -54,13 +119,42 @@ public class MainScript : MonoBehaviour
         ball.GetComponent<Rigidbody2D>().velocity = ballOrientation * BallVelocity;
     }
 
-    void spawner()
+    void loadMainMenu()
     {
-        float z = -Camera.main.transform.position.z;
+        startScreen = Instantiate(startScreen);
+        startGame = Instantiate(startGame);
+        quit = Instantiate(quitPrefab);
+    }
+    void cleanUpMainMenu()
+    {
+        Destroy(startScreen);
+        Destroy(startGame);
+        Destroy(quit);
+    }
+    void start_game()
+    {
+        gameRunning = true;
+        background = Instantiate(background);
         border = Instantiate(border);
         platform = Instantiate(platform);
         ball = Instantiate(ball);
         brickSpawner();
+    }
+    void detectMouseInput()
+    {
+        if (startGame.GetComponent<StartGameScript>().gotClicked())
+        {
+            cleanUpMainMenu();
+            start_game();
+        }
+        quitOrNot();
+    }
+    void quitOrNot()
+    {
+        if (quit.GetComponent<QuitScript>().gotClicked())
+        {
+            Application.Quit();
+        }
     }
     void launchBall()
     {
@@ -68,6 +162,13 @@ public class MainScript : MonoBehaviour
         Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
         rb.AddForce(angle * BallVelocity, ForceMode2D.Impulse);
         ballMoving = true;
+    }
+
+    void pauseGame()
+    {
+        ballPreviousVelocity = ball.GetComponent<Rigidbody2D>().velocity;
+        stopBall();
+        inputAllowed = false;
     }
 
     void keyInput()
@@ -90,10 +191,22 @@ public class MainScript : MonoBehaviour
             }
             clampPlatform();
         }
-        if(Input.GetAxis("Cancel") > 0)
+        if(Input.GetKeyDown("escape"))
         {
-            Application.Quit();
+            pauseGame();
+            quitConfirm();
         }
+    }
+    void quitConfirm()
+    {
+        quit = Instantiate(quitPrefab);
+        quitOrNot();
+        quit_confirm = true;
+    }
+    void resumeGame()
+    {
+        ball.GetComponent<Rigidbody2D>().AddForce(ballPreviousVelocity);
+        inputAllowed = true;
     }
     void clampBall()
     {
@@ -113,6 +226,7 @@ public class MainScript : MonoBehaviour
     void clampPlatform()
     {
         const float LeftBound = -15.4f, RightBound = 15.4f;
+        platformColliderHalfWidth = platform.GetComponent<BoxCollider2D>().size.x / 2;
         Vector3 platformPos = platform.transform.position;
         if(platformPos.x - platformColliderHalfWidth < LeftBound)
         {
@@ -187,18 +301,22 @@ public class MainScript : MonoBehaviour
             {
                 Destroy(bricks[i]);
             }
-            reSet();
+            setUpContinueScreen();
         }
     }
 
+    void stopBall()
+    {
+        Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
+        ballRb.velocity = Vector3.zero;
+        ballRb.Sleep();
+    }
     void reSet()
     {
         brickSpawner();
         platform.transform.position = new Vector3(PlatformPosX, PlatformPosY, 0);
         ball.transform.position = new Vector3(BallStartX, BallStartY, 0);
-        Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
-        ballRb.velocity = Vector3.zero;
-        ballRb.Sleep();
+        stopBall();
         ballMoving = false;
     }
 }
