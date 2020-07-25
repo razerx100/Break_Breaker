@@ -76,6 +76,7 @@ public class MainScript : MonoBehaviour
         }
         if (quit_confirm)
         {
+            quitOrNot();
             if (Input.GetKeyDown("space"))
             {
                 Destroy(quit);
@@ -200,7 +201,6 @@ public class MainScript : MonoBehaviour
     void quitConfirm()
     {
         quit = Instantiate(quitPrefab);
-        quitOrNot();
         quit_confirm = true;
     }
     void resumeGame()
