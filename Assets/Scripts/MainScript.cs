@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using number_gen = Assets.Scripts.NUmberManager;
 
 public class MainScript : MonoBehaviour
 {
@@ -29,7 +30,9 @@ public class MainScript : MonoBehaviour
     [SerializeField]
     GameObject ball;
     Vector2 ballPreviousVelocity;
-    const float BallVelocity = 25;
+    const float constant_ball_velocity = 25;
+    float BallVelocity = constant_ball_velocity;
+    int ball_velocity_increase_cap = 100;
     const float BallStartX = 0, BallStartY = -33.8f;
     bool ballMoving = false;
 
@@ -51,6 +54,18 @@ public class MainScript : MonoBehaviour
     const int bricks_number = 6;
     public int bricks_num = bricks_number;
 
+    [SerializeField]
+    GameObject zeroPrefab, onePrefab, twoPrefab, threePrefab, fourPrefab, fivePrefab, sixPrefab,
+        sevenPrefab, eightPrefab, ninePrefab;
+    GameObject sixth_digit, fifth_digit, fourth_digit, third_digit, second_digit, first_digit;
+    float in_game_sixth_digit_X = -44.2f, in_game_digit_Y = 39.8f;
+    float continue_sixth_digit_X = -12.7f, continue_digit_Y = 23.96f;
+    float continue_digit_scale_X = 0.79f, continue_digit_scale_Y = 0.73f;
+    public int score;
+    public bool score_changed = true;
+    bool score_reset = false;
+
+
     void Start()
     {
         loadMainMenu();
@@ -60,6 +75,14 @@ public class MainScript : MonoBehaviour
     {
         if (gameRunning)
         {
+            if (score_changed)
+            {
+                BallVelocity += ((score / ball_velocity_increase_cap) * 15);
+                ball_velocity_increase_cap += 100;
+                clean_up_score();
+                show_score();
+                score_changed = false;
+            }
             if (inputAllowed)
             {
                 keyInput();
@@ -96,6 +119,7 @@ public class MainScript : MonoBehaviour
     }
     void setUpContinueScreen()
     {
+        show_continue_screen_score();
         continueGame = Instantiate(continueGamePrefab);
         continueScreen = Instantiate(continueScreenPrefab);
         quit = Instantiate(quitPrefab);
@@ -112,6 +136,14 @@ public class MainScript : MonoBehaviour
         Destroy(continueGame);
         Destroy(continueScreen);
         Destroy(quit);
+        clean_up_score();
+        score_changed = true;
+        if (score_reset)
+        {
+            score = 0;
+            BallVelocity = constant_ball_velocity;
+            score_reset = false;
+        }
     }
 
     private void FixedUpdate()
@@ -134,12 +166,15 @@ public class MainScript : MonoBehaviour
     }
     void start_game()
     {
+        score = 0;
         gameRunning = true;
         background = Instantiate(background);
         border = Instantiate(border);
         platform = Instantiate(platform);
         ball = Instantiate(ball);
         brickSpawner();
+        show_score();
+        score_changed = false;
     }
     void detectMouseInput()
     {
@@ -302,6 +337,7 @@ public class MainScript : MonoBehaviour
                 Destroy(bricks[i]);
             }
             setUpContinueScreen();
+            score_reset = true;
         }
     }
 
@@ -318,5 +354,114 @@ public class MainScript : MonoBehaviour
         ball.transform.position = new Vector3(BallStartX, BallStartY, 0);
         stopBall();
         ballMoving = false;
+    }
+
+    void show_score()
+    {
+        int[] num_array = new number_gen(score).get_value();
+        render_digit(out sixth_digit, num_array[0], new Vector2(in_game_sixth_digit_X, in_game_digit_Y));
+        render_digit(out fifth_digit, num_array[1], new Vector2(in_game_sixth_digit_X + 4, in_game_digit_Y));
+        render_digit(out fourth_digit, num_array[2], new Vector2(in_game_sixth_digit_X + 8, in_game_digit_Y));
+        render_digit(out third_digit, num_array[3], new Vector2(in_game_sixth_digit_X + 12, in_game_digit_Y));
+        render_digit(out second_digit, num_array[4], new Vector2(in_game_sixth_digit_X + 16, in_game_digit_Y));
+        render_digit(out first_digit, num_array[5], new Vector2(in_game_sixth_digit_X + 20, in_game_digit_Y));
+    }
+
+    void clean_up_score()
+    {
+        Destroy(first_digit);
+        Destroy(second_digit);
+        Destroy(third_digit);
+        Destroy(fourth_digit);
+        Destroy(fifth_digit);
+        Destroy(sixth_digit);
+    }
+
+    void show_continue_screen_score()
+    {
+        clean_up_score();
+        score_changed = false;
+        int[] num_array = new number_gen(score).get_value();
+        render_digit(out sixth_digit, num_array[0], new Vector2(continue_sixth_digit_X, continue_digit_Y));
+        sixth_digit.transform.localScale = new Vector3(continue_digit_scale_X, continue_digit_scale_Y, 1);
+        sixth_digit.GetComponent<SpriteRenderer>().sortingOrder = 3;
+        render_digit(out fifth_digit, num_array[1], new Vector2(continue_sixth_digit_X + 7, continue_digit_Y));
+        fifth_digit.transform.localScale = new Vector3(continue_digit_scale_X, continue_digit_scale_Y, 1);
+        fifth_digit.GetComponent<SpriteRenderer>().sortingOrder = 3;
+        render_digit(out fourth_digit, num_array[2], new Vector2(continue_sixth_digit_X + 14, continue_digit_Y));
+        fourth_digit.transform.localScale = new Vector3(continue_digit_scale_X, continue_digit_scale_Y, 1);
+        fourth_digit.GetComponent<SpriteRenderer>().sortingOrder = 3;
+        render_digit(out third_digit, num_array[3], new Vector2(continue_sixth_digit_X + 21, continue_digit_Y));
+        third_digit.transform.localScale = new Vector3(continue_digit_scale_X, continue_digit_scale_Y, 1);
+        third_digit.GetComponent<SpriteRenderer>().sortingOrder = 3;
+        render_digit(out second_digit, num_array[4], new Vector2(continue_sixth_digit_X + 28, continue_digit_Y));
+        second_digit.transform.localScale = new Vector3(continue_digit_scale_X, continue_digit_scale_Y, 1);
+        second_digit.GetComponent<SpriteRenderer>().sortingOrder = 3;
+        render_digit(out first_digit, num_array[5], new Vector2(continue_sixth_digit_X + 35, continue_digit_Y));
+        first_digit.transform.localScale = new Vector3(continue_digit_scale_X, continue_digit_scale_Y, 1);
+        first_digit.GetComponent<SpriteRenderer>().sortingOrder = 3;
+
+    }
+    void render_digit(out GameObject gobj, int digit, Vector2 co_ordinate)
+    {
+        switch (digit)
+        {
+            case 0:
+                {
+                    gobj = Instantiate(zeroPrefab);
+                    break;
+                }
+            case 1:
+                {
+                    gobj = Instantiate(onePrefab);
+                    break;
+                }
+            case 2:
+                {
+                    gobj = Instantiate(twoPrefab);
+                    break;
+                }
+            case 3:
+                {
+                    gobj = Instantiate(threePrefab);
+                    break;
+                }
+            case 4:
+                {
+                    gobj = Instantiate(fourPrefab);
+                    break;
+                }
+            case 5:
+                {
+                    gobj = Instantiate(fivePrefab);
+                    break;
+                }
+            case 6:
+                {
+                    gobj = Instantiate(sixPrefab);
+                    break;
+                }
+            case 7:
+                {
+                    gobj = Instantiate(sevenPrefab);
+                    break;
+                }
+            case 8:
+                {
+                    gobj = Instantiate(eightPrefab);
+                    break;
+                }
+            case 9:
+                {
+                    gobj = Instantiate(ninePrefab);
+                    break;
+                }
+            default:
+                {
+                    gobj = Instantiate(zeroPrefab);
+                    break;
+                }
+        }
+        gobj.transform.position = new Vector3(co_ordinate.x, co_ordinate.y, 0);
     }
 }

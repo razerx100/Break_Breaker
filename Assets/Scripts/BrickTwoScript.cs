@@ -10,9 +10,12 @@ public class BrickTwoScript : MonoBehaviour
         hitCount++;
         if (hitCount == 2)
         {
-            Destroy(gameObject);
             hitCount = 2;
-            Camera.main.GetComponent<MainScript>().bricks_num--;
+            MainScript main = Camera.main.GetComponent<MainScript>();
+            main.bricks_num--;
+            main.score += 10;
+            main.score_changed = true;
+            Destroy(gameObject);
         }
     }
 }

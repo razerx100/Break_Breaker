@@ -180,6 +180,28 @@ MonoBehaviour:
   bricks1: {fileID: 4811447248353742769, guid: cbfbee15d97e62f41ab82bfcd51f3dc3, type: 3}
   bricks2: {fileID: 5688812152840189643, guid: 3f5e870181e23874ab51f7abe16066c6, type: 3}
   bricks_num: 6
+  zeroPrefab: {fileID: 2007048808169752712, guid: f76af28df5167184391604f09a0c5511,
+    type: 3}
+  onePrefab: {fileID: 7851549098688301884, guid: 17f4de4728c11be4883d22c321b8ee88,
+    type: 3}
+  twoPrefab: {fileID: 861790689401581321, guid: 86bee7a80ac4e1d4984f7cb98ab6e293,
+    type: 3}
+  threePrefab: {fileID: 8956804056628893938, guid: 79e51b1320d728846a030e9c33f3d4ae,
+    type: 3}
+  fourPrefab: {fileID: 7447089796755671936, guid: 89f05af29e1845f47ad34ca8c13ee7ac,
+    type: 3}
+  fivePrefab: {fileID: 6452060055705665510, guid: 80a7db0722db70742a06390c0c071557,
+    type: 3}
+  sixPrefab: {fileID: 8524914053889210407, guid: c904f865a5784c541ba6681ddf98da85,
+    type: 3}
+  sevenPrefab: {fileID: 6662423394282626108, guid: 26debf9e29c77b64eb3b55590b33f23a,
+    type: 3}
+  eightPrefab: {fileID: 2682275144989537644, guid: d21fca153c4c38a4880b6171eec0bed5,
+    type: 3}
+  ninePrefab: {fileID: 5529284393753686683, guid: 24276633b4844ac45b39ef7b411b637b,
+    type: 3}
+  score: 0
+  score_changed: 1
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
