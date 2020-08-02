@@ -42,17 +42,16 @@ public class MainScript : MonoBehaviour
     float platformColliderHalfWidth;
 
     [SerializeField]
-    GameObject bricks1;
+    GameObject bricks1_prefab;
     [SerializeField]
-    GameObject bricks2;
-    float brickHalfWidth, brickHalfHeight;
-    Vector3[] brickPositions;
+    GameObject bricks2_prefab;
     GameObject[] bricks;
     const float BrickBoundMinX = -14f, BrickBoundMaxX = 14f;
-    const float BrickBoundMinY = 11f, BrickBoundMaxY = 38f;
+    const float BrickBoundMinY = 2f, BrickBoundMaxY = 37f;
+    const float Brick_X_middle = 4.7f, Brick_Y_distance = 3.5f;
 
-    const int bricks_number = 6;
-    public int bricks_num = bricks_number;
+    int bricks_number;
+    public int bricks_num;
 
     [SerializeField]
     GameObject zeroPrefab, onePrefab, twoPrefab, threePrefab, fourPrefab, fivePrefab, sixPrefab,
@@ -77,8 +76,11 @@ public class MainScript : MonoBehaviour
         {
             if (score_changed)
             {
-                BallVelocity += ((score / ball_velocity_increase_cap) * 15);
-                ball_velocity_increase_cap += 100;
+                int increase_ball_velocity = score / ball_velocity_increase_cap;
+                if (increase_ball_velocity != 0) {
+                    BallVelocity += 5;
+                    ball_velocity_increase_cap += 100;
+                }
                 clean_up_score();
                 show_score();
                 score_changed = false;
@@ -275,54 +277,50 @@ public class MainScript : MonoBehaviour
     }
     void brickGenerator()
     {
-        int bricksNum = 1;
-        while(bricksNum < bricks_number)
+        Vector2[] all_possible_positions = new Vector2[44];
+        bool[] is_position_taken = new bool[44];
+        int position = 0;
+        float y_location = BrickBoundMinY;
+        float[] x_locations = { BrickBoundMinX, -4.7f, 4.7f, BrickBoundMaxX };
+        for(int i = 0; i < 11; i++)
         {
-            Vector3 pos1 = new Vector3(UnityEngine.Random.Range(BrickBoundMinX, BrickBoundMaxX),
-                    UnityEngine.Random.Range(BrickBoundMinY, BrickBoundMaxY), 0);
-            bool collide = false;
-            for (int i = 0; i < bricksNum; i++)
+            for(int j = 0; j < 4; j++)
             {
-                if ((pos1.x - brickHalfWidth < brickPositions[i].x) &&
-                (pos1.x + brickHalfWidth > brickPositions[i].x) &&
-                (pos1.y - brickHalfHeight < brickPositions[i].y) &&
-                (pos1.y + brickHalfHeight > brickPositions[i].y))
-                {
-                    collide = true;
-                }
+                all_possible_positions[position] = new Vector2(x_locations[j], y_location);
+                is_position_taken[position] = false;
+                position++;
             }
-            if (!collide)
+            y_location += Brick_Y_distance;
+        }
+        int brick_generated = 0;
+        while(brick_generated < bricks_number)
+        {
+            int random_position = UnityEngine.Random.Range(0, 44);
+            if (!is_position_taken[random_position])
             {
-                bricksNum++;
-                int brickType = UnityEngine.Random.Range(0, 2);
+                int brick_type = UnityEngine.Random.Range(0, 2);
                 GameObject brick;
-                if(brickType == 0)
+                if(brick_type == 0)
                 {
-                    brick = Instantiate(bricks1);
+                    brick = Instantiate(bricks1_prefab);
                 }
                 else
                 {
-                    brick = Instantiate(bricks2);
+                    brick = Instantiate(bricks2_prefab);
                 }
-                brick.transform.position = pos1;
-                bricks[bricksNum - 1] = brick;
-                brickPositions[bricksNum - 1] = pos1;
+                brick.transform.position = new Vector3(all_possible_positions[random_position].x,
+                    all_possible_positions[random_position].y, 0);
+                bricks[brick_generated] = brick;
+                is_position_taken[random_position] = true;
+                brick_generated++;
             }
         }
     }
     void brickSpawner()
     {
-        Vector3 pos1 = new Vector3(UnityEngine.Random.Range(BrickBoundMinX, BrickBoundMaxX),
-            UnityEngine.Random.Range(BrickBoundMinY, BrickBoundMaxY), 0);
-        GameObject brick = Instantiate(bricks1);
-        brick.transform.position = pos1;
-        brickPositions = new Vector3[bricks_number];
+        bricks_number = UnityEngine.Random.Range(6, 15);
+        bricks_num = bricks_number;
         bricks = new GameObject[bricks_number];
-        bricks[0] = brick;
-        brickPositions[0] = pos1;
-        BoxCollider2D brickCollider = bricks1.GetComponent<BoxCollider2D>();
-        brickHalfWidth = brickCollider.transform.position.x / 2;
-        brickHalfHeight = brickCollider.transform.position.y / 2;
         brickGenerator();
         bricks_num = bricks_number;
     }
